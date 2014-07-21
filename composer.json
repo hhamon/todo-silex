@@ -1,0 +1,9 @@
+{
+    "name": "The famous Todo application",
+    "description": "Manage your todo list.",
+    "license": "MIT",
+
+    "require": {
+        "silex/silex": "~1.2"
+    }
+}
