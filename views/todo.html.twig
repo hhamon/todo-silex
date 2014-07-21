@@ -1,0 +1,13 @@
+{% extends "layout.html.twig" %}
+
+{% block title todo.title|title %}
+
+{% block content %}
+
+    <p>
+        <strong>Id</strong>: {{ todo.id }}<br/>
+        <strong>Title</strong>: {{ todo.title|title }}<br/>
+        <strong>Status</strong>: {{ todo.is_done ? 'done' : 'not finished' }}
+    </p>    
+
+{% endblock %}
