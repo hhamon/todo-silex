@@ -4,6 +4,7 @@
     "license": "MIT",
 
     "require": {
-        "silex/silex": "~1.2"
+        "silex/silex": "~1.2",
+        "twig/twig": "~1.16"
     }
 }

@@ -3,10 +3,20 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Silex\Application;
+use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application([ 'debug' => true ]);
+$app->register(new TwigServiceProvider(), [
+    'twig.path' => __DIR__.'/../views',
+    'twig.options'         => [
+        'cache'            => __DIR__.'/../cache/twig',
+        'debug'            => $app['debug'],
+        'strict_variables' => $app['debug'],
+        'auto_reload'      => $app['debug'],
+    ],
+]);
 
 // Homepage
 $app
