@@ -18,6 +18,10 @@ class TodoServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
+        // Define a global parameter
+        $app['todo.max_per_page'] = 10;
+
+        // Register a new service
         $app['todo_mapper'] = $app->share(function (Application $app) {
             return new TodoMapper($app['db']);
         });

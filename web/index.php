@@ -32,8 +32,10 @@ $app->register(new DoctrineServiceProvider(), [
     ],
 ]);
 
+$todo = $app['controllers_factory'];
+
 // Homepage
-$app
+$todo
     ->get('/', function () use ($app) {
         return $app['twig']->render('index.html.twig', [
             'count' => $app['todo_mapper']->countAll(),
@@ -44,8 +46,8 @@ $app
 ;
 
 // Show one task
-$app
-    ->get('/todo/{id}', function ($id) use ($app) {
+$todo
+    ->get('/{id}', function ($id) use ($app) {
         if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
@@ -58,8 +60,8 @@ $app
 ;
 
 // Create a new task
-$app
-    ->post('/todo', function (Request $request) use ($app) {
+$todo
+    ->post('/', function (Request $request) use ($app) {
         $title = $request->request->get('title');
         if (empty($title)) {
             $app->abort(400, 'Missing title to create a new todo.');
@@ -73,8 +75,8 @@ $app
 ;
 
 // Close an existing task
-$app
-    ->match('/todo/{id}/close', function ($id) use ($app) {
+$todo
+    ->match('/{id}/close', function ($id) use ($app) {
         if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
@@ -93,8 +95,8 @@ $app
 ;
 
 // Delete an existing task
-$app
-    ->match('/todo/{id}/delete', function ($id) use ($app) {
+$todo
+    ->match('/{id}/delete', function ($id) use ($app) {
         if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
@@ -107,6 +109,8 @@ $app
     ->assert('id', '\d+')
     ->method('POST|DELETE')
 ;
+
+$app->mount('/todo', $todo);
 
 // Run the application
 $app->run(Request::createFromGlobals());
