@@ -5,7 +5,6 @@ namespace Todo\Provider;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class TodoControllerProvider implements ControllerProviderInterface
 {
