@@ -3,6 +3,7 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Todo\Provider\TodoServiceProvider;
+use Todo\Provider\TodoControllerProvider;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -31,6 +32,9 @@ $app->register(new DoctrineServiceProvider(), [
         'charset'   => 'utf8',
     ],
 ]);
+
+// Register routes
+$app->mount('/todo', new TodoControllerProvider());
 
 // Run the application
 $app->run(Request::createFromGlobals());
