@@ -27,16 +27,16 @@
         {% for todo in todos %}
             <tr>
                 <td class="center">{{ todo.id }}</td>
-                <td><a href="">{{ todo.title|title }}</a></td>
+                <td><a href="{{ path('todo', { 'id': todo.id }) }}">{{ todo.title|title }}</a></td>
                 <td class="center">
                     {% if todo.is_done %}
                         <span class="done">done</span>
                     {% else %}
-                        <a href="">close</a>
+                        <a href="{{ path('todo_close', { 'id': todo.id }) }}">close</a>
                     {% endif %}
                 </td>
                 <td class="center">
-                    <a href="">delete</a>
+                    <a href="{{ path('todo_delete', { 'id': todo.id }) }}">delete</a>
                 </td>
             </tr>
         {% endfor %}

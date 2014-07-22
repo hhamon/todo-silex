@@ -77,8 +77,19 @@ $app
 
 // Close an existing task
 $app
-    ->match('/todo/{id}/close', function ($id) {
+    ->match('/todo/{id}/close', function ($id) use ($app) {
+        $todo = $app['db']->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
+        if (!$todo) {
+            $app->abort(404, sprintf('Todo #%u does not exist.', $id));
+        }
 
+        if ($todo['is_done']) {
+            $app->abort(404, sprintf('Todo #%u is already done.', $id));
+        }
+
+        $app['db']->update('todo', [ 'is_done' => 1], [ 'id' => $id ]);
+
+        return $app->redirect($app['url_generator']->generate('homepage'));
     })
     ->bind('todo_close')
     ->assert('id', '\d+')
@@ -87,8 +98,15 @@ $app
 
 // Delete an existing task
 $app
-    ->match('/todo/{id}/delete', function ($id) {
+    ->match('/todo/{id}/delete', function ($id) use ($app) {
+        $todo = $app['db']->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
+        if (!$todo) {
+            $app->abort(404, sprintf('Todo #%u does not exist.', $id));
+        }
 
+        $app['db']->delete('todo', [ 'id' => $id ]);
+
+        return $app->redirect($app['url_generator']->generate('homepage'));
     })
     ->bind('todo_delete')
     ->assert('id', '\d+')
