@@ -30,15 +30,16 @@ $app->register(new DoctrineServiceProvider(), [
         'charset'   => 'utf8',
     ],
 ]);
+$app['todo_mapper'] = $app->share(function (Application $app) {
+    return new TodoMapper($app['db']);
+});
 
 // Homepage
 $app
     ->get('/', function () use ($app) {
-        $mapper = new TodoMapper($app['db']);
-
         return $app['twig']->render('index.html.twig', [
-            'count' => $mapper->countAll(),
-            'todos' => $mapper->findAll(),
+            'count' => $app['todo_mapper']->countAll(),
+            'todos' => $app['todo_mapper']->findAll(),
         ]);
     })
     ->bind('homepage')
@@ -47,9 +48,7 @@ $app
 // Show one task
 $app
     ->get('/todo/{id}', function ($id) use ($app) {
-        $mapper = new TodoMapper($app['db']);
-
-        if (!$todo = $mapper->find($id)) {
+        if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
@@ -68,8 +67,7 @@ $app
             $app->abort(400, 'Missing title to create a new todo.');
         }
 
-        $mapper = new TodoMapper($app['db']);
-        $id = $mapper->create($title);
+        $id = $app['todo_mapper']->create($title);
 
         return $app->redirect($app['url_generator']->generate('todo', ['id' => $id]));
     })
@@ -79,8 +77,7 @@ $app
 // Close an existing task
 $app
     ->match('/todo/{id}/close', function ($id) use ($app) {
-        $mapper = new TodoMapper($app['db']);
-        if (!$todo = $mapper->find($id)) {
+        if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
@@ -88,7 +85,7 @@ $app
             $app->abort(404, sprintf('Todo #%u is already done.', $id));
         }
 
-        $mapper->close($id);
+        $app['todo_mapper']->close($id);
 
         return $app->redirect($app['url_generator']->generate('homepage'));
     })
@@ -100,12 +97,11 @@ $app
 // Delete an existing task
 $app
     ->match('/todo/{id}/delete', function ($id) use ($app) {
-        $mapper = new TodoMapper($app['db']);
-        if (!$todo = $mapper->find($id)) {
+        if (!$todo = $app['todo_mapper']->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
-        $mapper->delete($id);
+        $app['todo_mapper']->delete($id);
 
         return $app->redirect($app['url_generator']->generate('homepage'));
     })

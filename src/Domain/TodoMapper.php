@@ -13,6 +13,11 @@ class TodoMapper
         $this->database = $database;
     }
 
+    /**
+     * Returns the number of all todos.
+     *
+     * @return int
+     */
     public function countAll()
     {
         return (int) $this->database->fetchColumn('SELECT COUNT(*) FROM todo');
@@ -28,6 +33,14 @@ class TodoMapper
         return $this->database->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
     }
 
+    /**
+     * Creates a new todo in the database.
+     *
+     * @param  string $title
+     * @return int
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
     public function create($title)
     {
         if (empty($title)) {
@@ -38,7 +51,7 @@ class TodoMapper
             throw new \RuntimeException('Unable to create new todo.');
         }
 
-        return $this->database->lastInsertId();
+        return (int) $this->database->lastInsertId();
     }
 
     public function close($id)

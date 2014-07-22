@@ -9,6 +9,10 @@
         }
     },
 
+    "require-dev": {
+        "phpdocumentor/phpdocumentor": "2.*"
+    },
+
     "require": {
         "silex/silex": "~1.2",
         "twig/twig": "~1.16",
