@@ -16,8 +16,10 @@
     "require": {
         "silex/silex": "~1.2",
         "silex/web-profiler": "~1.0",
+        "flint/flint": "~1.0",
         "twig/twig": "~1.16",
         "doctrine/dbal": "~2.4",
-        "symfony/twig-bridge": "~2.5"
+        "symfony/twig-bridge": "~2.5",
+        "symfony/yaml": "~2.5"
     }
 }

@@ -1,0 +1,32 @@
+homepage:
+    path:     /
+    defaults: { _controller: todo_controller:indexAction }
+    methods:  GET
+
+todo_homepage:
+    path:     /todo
+    defaults: { _controller: todo_controller:indexAction }
+    methods:  GET
+
+todo_create:
+    path:     /todo
+    defaults: { _controller: todo_controller:createAction }
+    methods:  POST
+
+todo:
+    path:     /todo/{id}
+    defaults: { _controller: todo_controller:todoAction }
+    requirements: { id: \d+ }
+    methods:  GET
+
+todo_close:
+    path:     /todo/{id}/close
+    defaults: { _controller: todo_controller:closeAction }
+    requirements: { id: \d+ }
+    methods:  POST|PUT|PATCH
+
+todo_delete:
+    path:     /todo/{id}/delete
+    defaults: { _controller: todo_controller:deleteAction }
+    requirements: { id: \d+ }
+    methods:  POST|DELETE
