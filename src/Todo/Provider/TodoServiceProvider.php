@@ -36,6 +36,7 @@ class TodoServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // TODO: Implement boot() method.
+        // Mount routes
+        $app->mount('/todo', include __DIR__.'/../../../config/todo.php');
     }
-} 
+}

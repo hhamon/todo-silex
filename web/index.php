@@ -32,9 +32,5 @@ $app->register(new DoctrineServiceProvider(), [
     ],
 ]);
 
-
-
-$app->mount('/todo', include __DIR__.'/../config/todo.php');
-
 // Run the application
 $app->run(Request::createFromGlobals());
