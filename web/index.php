@@ -2,6 +2,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Domain\TodoMapper;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -33,9 +34,11 @@ $app->register(new DoctrineServiceProvider(), [
 // Homepage
 $app
     ->get('/', function () use ($app) {
+        $mapper = new TodoMapper($app['db']);
+
         return $app['twig']->render('index.html.twig', [
-            'count' => $app['db']->fetchColumn('SELECT COUNT(*) FROM todo'),
-            'todos' => $app['db']->fetchAll('SELECT * FROM todo'),
+            'count' => $mapper->countAll(),
+            'todos' => $mapper->findAll(),
         ]);
     })
     ->bind('homepage')
@@ -44,8 +47,9 @@ $app
 // Show one task
 $app
     ->get('/todo/{id}', function ($id) use ($app) {
-        $todo = $app['db']->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
-        if (!$todo) {
+        $mapper = new TodoMapper($app['db']);
+
+        if (!$todo = $mapper->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
@@ -64,11 +68,8 @@ $app
             $app->abort(400, 'Missing title to create a new todo.');
         }
 
-        if (!$app['db']->insert('todo', [ 'title' => $title ])) {
-            $app->abort(500, 'Unable to create new todo.'); 
-        }
-
-        $id = $app['db']->lastInsertId();
+        $mapper = new TodoMapper($app['db']);
+        $id = $mapper->create($title);
 
         return $app->redirect($app['url_generator']->generate('todo', ['id' => $id]));
     })
@@ -78,8 +79,8 @@ $app
 // Close an existing task
 $app
     ->match('/todo/{id}/close', function ($id) use ($app) {
-        $todo = $app['db']->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
-        if (!$todo) {
+        $mapper = new TodoMapper($app['db']);
+        if (!$todo = $mapper->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
@@ -87,7 +88,7 @@ $app
             $app->abort(404, sprintf('Todo #%u is already done.', $id));
         }
 
-        $app['db']->update('todo', [ 'is_done' => 1], [ 'id' => $id ]);
+        $mapper->close($id);
 
         return $app->redirect($app['url_generator']->generate('homepage'));
     })
@@ -99,12 +100,12 @@ $app
 // Delete an existing task
 $app
     ->match('/todo/{id}/delete', function ($id) use ($app) {
-        $todo = $app['db']->fetchAssoc('SELECT * FROM todo WHERE id = ?', [ $id ]);
-        if (!$todo) {
+        $mapper = new TodoMapper($app['db']);
+        if (!$todo = $mapper->find($id)) {
             $app->abort(404, sprintf('Todo #%u does not exist.', $id));
         }
 
-        $app['db']->delete('todo', [ 'id' => $id ]);
+        $mapper->delete($id);
 
         return $app->redirect($app['url_generator']->generate('homepage'));
     })

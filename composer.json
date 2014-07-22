@@ -3,6 +3,12 @@
     "description": "Manage your todo list.",
     "license": "MIT",
 
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    },
+
     "require": {
         "silex/silex": "~1.2",
         "twig/twig": "~1.16",
