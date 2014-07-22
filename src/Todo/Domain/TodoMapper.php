@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain;
+namespace Todo\Domain;
 
 use Doctrine\DBAL\Connection;
 

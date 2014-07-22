@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Domain\TodoMapper;
+use Todo\Provider\TodoServiceProvider;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -10,6 +10,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application([ 'debug' => true ]);
+$app->register(new TodoServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new TwigServiceProvider(), [
     'twig.path'            => __DIR__.'/../views',
@@ -30,9 +31,6 @@ $app->register(new DoctrineServiceProvider(), [
         'charset'   => 'utf8',
     ],
 ]);
-$app['todo_mapper'] = $app->share(function (Application $app) {
-    return new TodoMapper($app['db']);
-});
 
 // Homepage
 $app
