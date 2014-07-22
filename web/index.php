@@ -9,6 +9,7 @@ use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
+use Silex\Provider\WebProfilerServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application([ 'debug' => true ]);
@@ -34,6 +35,12 @@ $app->register(new DoctrineServiceProvider(), [
         'charset'   => 'utf8',
     ],
 ]);
+
+if ($app['debug']) {
+    $app->register(new WebProfilerServiceProvider(), [
+        'profiler.cache_dir' => __DIR__.'/../cache/profiler',
+    ]);
+}
 
 // Register routes
 $app->mount('/todo', new TodoControllerProvider());
