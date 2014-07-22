@@ -6,12 +6,14 @@ use Todo\Provider\TodoServiceProvider;
 use Todo\Provider\TodoControllerProvider;
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application([ 'debug' => true ]);
 $app->register(new TodoServiceProvider());
+$app->register(new ServiceControllerServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new TwigServiceProvider(), [
     'twig.path'            => __DIR__.'/../views',

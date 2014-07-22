@@ -4,6 +4,7 @@ namespace Todo\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Todo\Controller\TodoController;
 use Todo\Domain\TodoMapper;
 
 class TodoServiceProvider implements ServiceProviderInterface
@@ -24,6 +25,11 @@ class TodoServiceProvider implements ServiceProviderInterface
         // Register a new service
         $app['todo_mapper'] = $app->share(function (Application $app) {
             return new TodoMapper($app['db']);
+        });
+
+        // Register a controller as a service
+        $app['todo_controller'] = $app->share(function (Application $app) {
+            return new TodoController($app['twig'], $app['todo_mapper'], $app['url_generator']);
         });
     }
 
