@@ -32,15 +32,35 @@
                     {% if todo.is_done %}
                         <span class="done">done</span>
                     {% else %}
-                        <a href="{{ path('todo_close', { 'id': todo.id }) }}">close</a>
+                        <a href="{{ path('todo_close', { 'id': todo.id }) }}" class="close-link">close</a>
                     {% endif %}
                 </td>
                 <td class="center">
-                    <a href="{{ path('todo_delete', { 'id': todo.id }) }}">delete</a>
+                    <a href="{{ path('todo_delete', { 'id': todo.id }) }}" class="delete-link">delete</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $('.close-link').click(function () {
+            var column = $(this).parent('td[class="center"]');
+            var ajax = $.post($(this).attr('href'));
+            ajax.done(function() {
+                column.empty().append('<span class="done">done</span>');
+            });
+            return false;
+        });
+        $('.delete-link').click(function () {
+            var row = $(this).parent('td[class="center"]').parent('tr');
+            var ajax = $.post($(this).attr('href'));
+            ajax.done(function() { row.remove(); });
+            return false;
+        });
+    </script>
 {% endblock %}
