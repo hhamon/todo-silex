@@ -5,10 +5,11 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application([ 'debug' => true ]);
+$app->register(new UrlGeneratorServiceProvider());
 $app->register(new TwigServiceProvider(), [
     'twig.path'            => __DIR__.'/../views',
     'twig.options'         => [
@@ -57,8 +58,19 @@ $app
 
 // Create a new task
 $app
-    ->post('/todo', function (Request $request) {
+    ->post('/todo', function (Request $request) use ($app) {
+        $title = $request->request->get('title');
+        if (empty($title)) {
+            $app->abort(400, 'Missing title to create a new todo.');
+        }
 
+        if (!$app['db']->insert('todo', [ 'title' => $title ])) {
+            $app->abort(500, 'Unable to create new todo.'); 
+        }
+
+        $id = $app['db']->lastInsertId();
+
+        return $app->redirect($app['url_generator']->generate('todo', ['id' => $id]));
     })
     ->bind('todo_create')
 ;

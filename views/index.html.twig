@@ -2,11 +2,10 @@
 
 {% block content %}
 
-    <form action="list.php" method="post">
+    <form action="{{ path('todo_create') }}" method="post">
         <div>
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" size="45"/>
-            <input type="hidden" name="action" value="create"/>
             <button type="submit">send</button>
         </div>
     </form>
